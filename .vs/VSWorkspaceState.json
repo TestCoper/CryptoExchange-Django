@@ -2,10 +2,16 @@
   "ExpandedNodes": [
     "",
     "\\config",
-    "\\gateway",
+    "\\static",
+    "\\static\\_next",
+    "\\static\\_next\\static",
+    "\\static\\_next\\static\\js",
     "\\templates",
-    "\\templates\\gateway"
+    "\\templates\\gateway",
+    "\\templates\\gateway\\_next",
+    "\\templates\\gateway\\_next\\static",
+    "\\templates\\gateway\\_next\\static\\js"
   ],
-  "SelectedNode": "\\templates\\gateway\\_next",
+  "SelectedNode": "\\gateway\\views.py",
   "PreviewInSolutionExplorer": false
 }

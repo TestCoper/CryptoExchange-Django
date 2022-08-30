@@ -83,11 +83,16 @@ async function chaTheme() {
 
 }
 
-
+function isInt(n) {
+    return n % 1 === 0;
+}
 
 
 function swapsend() {
     var psh1 = document.getElementById("varTokSe").value;
+    if (isInt(psh1) == true) {
+        psh1 = parseFloat(psh1).toFixed(2);
+    }
     var psh2 = document.getElementById("ftok").textContent;
     var psh3 = document.getElementById("ftok2").textContent;
     document.getElementById("inp1").value = psh1;
