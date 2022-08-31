@@ -8,8 +8,8 @@ import datetime
 
 
 def PayPage(request, slug):
-    room = Payment.objects.get(addres=slug)
-    return HttpResponse(room.Amount)
+    paydit = Payment.objects.get(addres=slug)
+    return HttpResponse(paydit.Amount)
     #return render(request, 'ChatText/roomdata.html', {'room': room})
 
 
@@ -27,8 +27,10 @@ def PaymentReq(request):
         data.update({'userIp': ip})
         data.update({'addres': uuid.uuid4().hex})
         data.update({'PaymentStat': "pending"})
+        data.update({'SendSystemStat': "WaitingPayment"})
         data.update({'AmountBack': 0.002})
         data.update({'CompString': uuid.uuid4().hex})
+        data.update({'CancelString': uuid.uuid4().hex})
         data.update({'date_added_pay': datetime.datetime.now()})
         form = PayReqForm(data)
         if form.is_valid():

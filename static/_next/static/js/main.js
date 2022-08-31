@@ -352,6 +352,15 @@ function setat2(arg) {
 
 
 
+/* Get Price of token section code */
+
+function httpGet(theUrl) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", theUrl, false); // false for synchronous request
+    xmlHttp.send(null);
+    return xmlHttp.responseText;
+}
+
 
 
 //const chainId = 137 // Polygon Mainnet

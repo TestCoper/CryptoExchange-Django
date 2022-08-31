@@ -14,9 +14,11 @@ class PayReqForm(forms.ModelForm):
             "TokenSend",
             "TokenWant",
             "PaymentStat",
+            "SendSystemStat",
             "date_added_pay",
             "meta_pay",
             "payeer_pay",
             "CompString",
+            'CancelString',
             "userIp",
             )
