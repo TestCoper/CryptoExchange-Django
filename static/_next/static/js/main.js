@@ -5,6 +5,8 @@ var tokList = document.getElementById("tokList");
 var tokList2 = document.getElementById("tokList2");
 var ftok = document.getElementById("ftok");
 var ttok = document.getElementById("ttok");
+var chti = 0;
+var chti2 = 0;
 
 /* Moralis init code */
 const serverUrl = "https://9hm5uxsbenhc.usemoralis.com:2053/server";
@@ -102,14 +104,6 @@ function swapsend() {
 
 
 
-/* Listner code */
-document.getElementById("conbut").onclick = login;
-document.getElementById("swap").onclick = swapsend;
-document.getElementById("selcthe").onclick = chaTheme;
-startpage();
-checkCookie();
-
-
 /* Cookie section code */
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
@@ -191,6 +185,8 @@ function AcSelTok2() {
 }
 
 function setat(arg) {
+    chti = 0;
+    chti2 = 0;
     if (arg == "eth") {
         deAcv();
         document.getElementById("ftok").textContent = "ETH";
@@ -270,6 +266,8 @@ function setat(arg) {
 }
 
 function setat2(arg) {
+    chti = 0;
+    chti2 = 0;
     if (arg == "eth") {
         deAcv2();
         document.getElementById("ftok2").textContent = "ETH";
@@ -360,6 +358,114 @@ function httpGet(theUrl) {
     xmlHttp.send(null);
     return xmlHttp.responseText;
 }
+
+
+var resp;
+var resp2;
+var resp3;
+var time1;
+var time2;
+var performance = window.performance, round = Math.round;
+var timeNow;
+timeNow = performance.now();
+time1 = round(timeNow / 1000);
+function TokToUsd() {
+    var usTokvar = document.getElementById("varTokSe").value;
+    var usTok = document.getElementById("ftok").textContent;
+    var usTok2 = document.getElementById("ftok2").textContent;
+    var timetest = performance.now();
+    time2 = round(timetest / 1000);
+    var ekhtime = time2 - time1
+    if (ekhtime > 30) {
+        chti = 0;
+        console.log("send shode");
+        timeNow = performance.now();
+        time1 = round(timeNow / 1000);
+    }
+    if (chti == 0) {
+        chti = 1;
+        var url = "../price/" + usTok + "/";
+        var url2 = "../price/" + usTok + "/" + usTok2 + "/";
+        var url3 = "../price/" + usTok2 + "/";
+        resp = httpGet(url);
+        resp2 = httpGet(url2);
+        resp3 = httpGet(url3);
+    }
+    var data = JSON.parse(resp);
+    var data2 = JSON.parse(resp2);
+    var data3 = JSON.parse(resp3);
+    var usd = data['price'] * usTokvar
+    var usd2 = data2['price'] * usTokvar
+    var usd3 = data3['price'] * usd2;
+    var minr = (usd2 * 99.5) / 100
+    document.getElementById("rate").textContent = (Math.round(data['price'] * 100) / 100).toFixed(2);;
+    document.getElementById("usdf").textContent = "= $" + (Math.round(usd * 100) / 100).toFixed(2);
+    document.getElementById("usdf2").textContent = "= $" + (Math.round(usd3 * 100) / 100).toFixed(2);
+    document.getElementById("varTokSe2").value = (Math.round(usd2 * 100) / 100).toFixed(2);
+    document.getElementById("minr").textContent = (Math.round(minr * 100) / 100).toFixed(2);
+}
+
+
+var resp4;
+var resp5;
+var resp6;
+var time3;
+var time4;
+var timeNow2;
+timeNow2 = performance.now();
+time3 = round(timeNow / 1000);
+
+function TokToUsd2() {
+    var usTokvar = document.getElementById("varTokSe2").value;
+    var usTok = document.getElementById("ftok2").textContent;
+    var usTok2 = document.getElementById("ftok").textContent;
+    var timetest2 = performance.now();
+    time4 = round(timetest2 / 1000);
+    var ekhtime2 = time4 - time3
+    if (ekhtime2 > 30) {
+        chti2 = 0;
+        console.log("send shode");
+        timeNow2 = performance.now();
+        time3 = round(timeNow2 / 1000);
+    }
+    if (chti2 == 0) {
+        chti2 = 1;
+        var url = "../price/" + usTok + "/";
+        var url2 = "../price/" + usTok + "/" + usTok2 + "/";
+        var url3 = "../price/" + usTok2 + "/";
+        resp4 = httpGet(url);
+        resp5 = httpGet(url2);
+        resp6 = httpGet(url3);
+    }
+    var data = JSON.parse(resp4);
+    var data2 = JSON.parse(resp5);
+    var data3 = JSON.parse(resp6);
+    var usd = data['price'] * usTokvar
+    var usd2 = data2['price'] * usTokvar
+    var usd3 = data3['price'] * usd2;
+    var minr = (usTokvar * 99.5) / 100
+    document.getElementById("rate").textContent = (Math.round(data3['price'] * 100) / 100).toFixed(2);;
+    document.getElementById("usdf2").textContent = "= $" + (Math.round(usd * 100) / 100).toFixed(2);
+    document.getElementById("usdf").textContent = "= $" + (Math.round(usd3 * 100) / 100).toFixed(2);
+    document.getElementById("varTokSe").value = (Math.round(usd2 * 100) / 100).toFixed(2);
+    document.getElementById("minr").textContent = (Math.round(minr * 100) / 100).toFixed(2);
+}
+
+
+function al() {
+    alert("mmd");
+}
+
+/* Listner code */
+document.getElementById("conbut").onclick = login;
+document.getElementById("swap").onclick = swapsend;
+document.getElementById("selcthe").onclick = chaTheme;
+document.getElementById("varTokSe").onkeyup = TokToUsd;
+document.getElementById("varTokSe2").onkeyup = TokToUsd2;
+startpage();
+checkCookie();
+
+
 
 
 
