@@ -15,6 +15,7 @@ class Payment(models.Model):
     CompString = models.CharField(max_length=40, null=True)
     CancelString = models.CharField(max_length=40, null=True)
     userIp = models.CharField(max_length=40)
+    SelNetwork = models.CharField(max_length=40, null=True)
     is_limit = models.BooleanField(null=True)
     meta_pay = models.BooleanField()
     payeer_pay = models.BooleanField()

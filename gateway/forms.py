@@ -21,4 +21,5 @@ class PayReqForm(forms.ModelForm):
             "CompString",
             'CancelString',
             "userIp",
+            "SelNetwork",
             )

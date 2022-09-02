@@ -47,19 +47,7 @@ async function logOut() {
 }
 
 
-/* Payment code */
-async function runcode() {
-    try {
-        web3 = await Moralis.enableWeb3();
-        let result = await Moralis.transfer({ type: "native", receiver: "0x006Bbb1672652676994925909CC444C4F06678FD", amount: Moralis.Units.Token("0.000227", "18") });
-        console.log(result);
-    }
-    catch (err) {
-        if (err.code == 4001) {
-            alert("Transfer cancel by user");
-        }
-    }
-}
+
 
 /* Show Wallet Add of User code */
 async function startpage() {
@@ -468,29 +456,3 @@ checkCookie();
 
 
 
-
-//const chainId = 137 // Polygon Mainnet
-
-//if (window.ethereum.networkVersion !== chainId) {
-//    try {
-//        await window.ethereum.request({
-//            method: 'wallet_switchEthereumChain',
-//            params: [{ chainId: "0x89" }]
-//        });
-//    } catch (err) {
-//        // This error code indicates that the chain has not been added to MetaMask
-//        if (err.code === 4902) {
-//            await window.ethereum.request({
-//                method: 'wallet_addEthereumChain',
-//                params: [
-//                    {
-//                        chainName: 'Polygon Mainnet',
-//                        chainId: "0x89",
-//                        nativeCurrency: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
-//                        rpcUrls: ['https://polygon-rpc.com/']
-//                    }
-//                ]
-//            });
-//        }
-//    }
-//}

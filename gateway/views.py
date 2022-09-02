@@ -3,7 +3,7 @@ from .forms import PayReqForm
 from .models import Payment
 from price.models import PriceCoin
 import uuid
-import datetime
+from datetime import datetime, timezone
 
 
 
@@ -24,15 +24,19 @@ def PaymentReq(request):
         if (data['TokenSend'] == "ETH" and data['TokenWant'] == "PIKAU"):
             coindit = PriceCoin.objects.get(addres=6)
             data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
+            data.update({'SelNetwork': "eth"})
         elif (data['TokenSend'] == "ETH" and data['TokenWant'] == "Polygon"):
             coindit = PriceCoin.objects.get(addres=7)
             data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
+            data.update({'SelNetwork': "eth"})
         elif (data['TokenSend'] == "ETH" and data['TokenWant'] == "BNB"):
             coindit = PriceCoin.objects.get(addres=8)
             data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
+            data.update({'SelNetwork': "eth"})
         elif (data['TokenSend'] == "ETH" and data['TokenWant'] == "USDC"):
             coindit = PriceCoin.objects.get(addres=9)
             data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
+            data.update({'SelNetwork': "eth"})
         elif (data['TokenSend'] == "PIKAU" and data['TokenWant'] == "ETH"):
             coindit = PriceCoin.objects.get(addres=10)
             data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
@@ -91,7 +95,7 @@ def PaymentReq(request):
         data.update({'SendSystemStat': "WaitingPayment"})
         data.update({'CompString': uuid.uuid4().hex})
         data.update({'CancelString': uuid.uuid4().hex})
-        data.update({'date_added_pay': datetime.datetime.now()})
+        data.update({'date_added_pay': datetime.now(timezone.utc)})
         form = PayReqForm(data)
         if form.is_valid():
             form.save()
