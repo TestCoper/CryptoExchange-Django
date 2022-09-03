@@ -5,12 +5,12 @@
     "\\gateway",
     "\\price",
     "\\static",
+    "\\static\\_next",
+    "\\static\\_next\\static",
+    "\\static\\_next\\static\\js",
     "\\templates",
-    "\\templates\\gateway",
-    "\\templates\\gateway\\_next",
-    "\\templates\\gateway\\_next\\static",
-    "\\templates\\gateway\\_next\\static\\js"
+    "\\templates\\pay"
   ],
-  "SelectedNode": "\\price\\urls.py",
+  "SelectedNode": "\\price\\views.py",
   "PreviewInSolutionExplorer": false
 }

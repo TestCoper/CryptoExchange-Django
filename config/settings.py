@@ -15,7 +15,8 @@ SECRET_KEY = 'django-insecure-#b%$@^%$ia=gd3hvi=cfky&%@noh+yk*1^6nx+_^*2!5edg10%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'b404-5-215-21-147.eu.ngrok.io']
+ALLOWED_HOSTS = ['127.0.0.1', '38ff-84-17-43-243.eu.ngrok.io']
+CSRF_TRUSTED_ORIGINS = ["https://38ff-84-17-43-243.eu.ngrok.io"]
 
 
 # Application definition
@@ -80,6 +81,23 @@ DATABASES = {
 }
 
 
+# -------- just for deploy db -------#
+
+#DATABASES = {  
+#    'default': {  
+#        'ENGINE': 'mysql.connector.django',  
+#        'NAME': 'faouefsl_PSH',  
+#        'USER': 'faouefsl_psh',  
+#        'PASSWORD': '6ye?XewrabuY',  
+#        'HOST': '127.0.0.1',  
+#        'PORT': '3306',  
+#        'OPTIONS': {  
+#        }  
+#    }  
+#}
+# -------- /just for deploy db -------#
+
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -111,6 +129,7 @@ USE_I18N = True
 USE_TZ = True
 
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -124,3 +143,10 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ------- just for deploy ------ #
+#STATIC_URL = '/static/'
+#STATICFILES_DIRS = [(BASE_DIR, "static")]
+#DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#STATIC_ROOT = '/home/faouefsl/public_html/static/'
+# ------- /just for deploy ------ #

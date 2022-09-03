@@ -75,7 +75,7 @@ def Usdc(request):
 
 def EthPika(request):
     coindit = PriceCoin.objects.get(addres=6)
-    return JsonResponse({"price": coindit.ExchangePrice})
+    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
     
 
 def EthPolygon(request):
@@ -164,7 +164,7 @@ def PolygonEth(request):
 
 def PolygonPika(request):
     coindit = PriceCoin.objects.get(addres=15)
-    return JsonResponse(coindit.ExchangePrice)
+    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
     
 
 def PolygonBnb(request):
@@ -217,7 +217,7 @@ def BnbEth(request):
 
 def BnbPika(request):
     coindit = PriceCoin.objects.get(addres=19)
-    return JsonResponse(coindit.ExchangePrice)
+    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
     
 
 def BnbPolygon(request):
@@ -270,7 +270,7 @@ def UsdcEth(request):
 
 def UsdcPika(request):
     coindit = PriceCoin.objects.get(addres=23)
-    return JsonResponse(coindit.ExchangePrice)
+    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
     
 
 def UsdcPolygon(request):
