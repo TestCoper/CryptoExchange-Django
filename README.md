@@ -35,7 +35,7 @@ Please note that the details provided in this README are for illustrative purpos
 For specific implementation details and code examples, refer to the source code in the 'getway' app directory within the project repository. If you encounter any issues or have questions related to Moralis integration, feel free to reach out to our support team or refer to Moralis documentation for assistance.
 
 ### Plans
-The 'plans' directory contains a blue map of the entire project, illustrating the flow and structure. To access the blue map, follow this link: [Blue Map of the Project](/plans/blue_map.png).
+The 'plans' directory contains a blue map of the entire project, illustrating the flow and structure. To access the blue map, follow this link: [Blue Map of the Project](/plans/swap.html).
 
 ### Price App
 The 'price' app is used to check the price of each cryptocurrency and responds with JSON data. This app is utilized in the frontend to display the trading price of each coin relative to other coins. The cryptocurrency prices are fetched using the CoinMarketCapAPI Python library.
