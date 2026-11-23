@@ -1,4 +1,4 @@
-﻿from linecache import cache
+from linecache import cache
 from django.shortcuts import redirect, render, HttpResponse
 from .forms import PayReqForm
 from .models import Payment
@@ -57,6 +57,40 @@ def SetTxn(request, slug, id2):
     paydit.save()
     return HttpResponse("i think ok -- " + slug + "-------" + id2)
 
+# Maps TokenSend value → blockchain network identifier
+TOKEN_NETWORK_MAP = {
+    "ETH": "eth",
+    "PIKAU": "pika",
+    "Polygon": "poly",
+    "BNB": "bnb",
+    "USDC": "usdc",
+}
+
+# Maps (TokenSend, TokenWant) → PriceCoin DB id
+PAIR_DB_IDS = {
+    ("ETH", "PIKAU"): 6,
+    ("ETH", "Polygon"): 7,
+    ("ETH", "BNB"): 8,
+    ("ETH", "USDC"): 9,
+    ("PIKAU", "ETH"): 10,
+    ("PIKAU", "Polygon"): 11,
+    ("PIKAU", "BNB"): 12,
+    ("PIKAU", "USDC"): 13,
+    ("Polygon", "ETH"): 14,
+    ("Polygon", "PIKAU"): 15,
+    ("Polygon", "BNB"): 16,
+    ("Polygon", "USDC"): 17,
+    ("BNB", "ETH"): 18,
+    ("BNB", "PIKAU"): 19,
+    ("BNB", "Polygon"): 20,
+    ("BNB", "USDC"): 21,
+    ("USDC", "ETH"): 22,
+    ("USDC", "PIKAU"): 23,
+    ("USDC", "Polygon"): 24,
+    ("USDC", "BNB"): 25,
+}
+
+
 def PaymentReq(request):
     if request.method == "POST":
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -65,97 +99,25 @@ def PaymentReq(request):
         else:
             ip = request.META.get('REMOTE_ADDR')
         data = request.POST.copy()
-        if (data['TokenSend'] == "ETH" and data['TokenWant'] == "PIKAU"):
-            coindit = PriceCoin.objects.get(addres=6)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "eth"})
-        elif (data['TokenSend'] == "ETH" and data['TokenWant'] == "Polygon"):
-            coindit = PriceCoin.objects.get(addres=7)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "eth"})
-        elif (data['TokenSend'] == "ETH" and data['TokenWant'] == "BNB"):
-            coindit = PriceCoin.objects.get(addres=8)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "eth"})
-        elif (data['TokenSend'] == "ETH" and data['TokenWant'] == "USDC"):
-            coindit = PriceCoin.objects.get(addres=9)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "eth"})
-        elif (data['TokenSend'] == "PIKAU" and data['TokenWant'] == "ETH"):
-            coindit = PriceCoin.objects.get(addres=10)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "pika"})
-        elif (data['TokenSend'] == "PIKAU" and data['TokenWant'] == "Polygon"):
-            coindit = PriceCoin.objects.get(addres=11)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "pika"})
-        elif (data['TokenSend'] == "PIKAU" and data['TokenWant'] == "BNB"):
-            coindit = PriceCoin.objects.get(addres=12)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "pika"})
-        elif (data['TokenSend'] == "PIKAU" and data['TokenWant'] == "USDC"):
-            coindit = PriceCoin.objects.get(addres=13)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "pika"})
-        elif (data['TokenSend'] == "Polygon" and data['TokenWant'] == "ETH"):
-            coindit = PriceCoin.objects.get(addres=14)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "poly"})
-        elif (data['TokenSend'] == "Polygon" and data['TokenWant'] == "PIKAU"):
-            coindit = PriceCoin.objects.get(addres=15)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "poly"})
-        elif (data['TokenSend'] == "Polygon" and data['TokenWant'] == "BNB"):
-            coindit = PriceCoin.objects.get(addres=16)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "poly"})
-        elif (data['TokenSend'] == "Polygon" and data['TokenWant'] == "USDC"):
-            coindit = PriceCoin.objects.get(addres=17)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "poly"})
-        elif (data['TokenSend'] == "BNB" and data['TokenWant'] == "ETH"):
-            coindit = PriceCoin.objects.get(addres=18)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "bnb"})
-        elif (data['TokenSend'] == "BNB" and data['TokenWant'] == "PIKAU"):
-            coindit = PriceCoin.objects.get(addres=19)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "bnb"})
-        elif (data['TokenSend'] == "BNB" and data['TokenWant'] == "Polygon"):
-            coindit = PriceCoin.objects.get(addres=20)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "bnb"})
-        elif (data['TokenSend'] == "BNB" and data['TokenWant'] == "USDC"):
-            coindit = PriceCoin.objects.get(addres=21)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "bnb"})
-        elif (data['TokenSend'] == "USDC" and data['TokenWant'] == "ETH"):
-            coindit = PriceCoin.objects.get(addres=22)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "usdc"})
-        elif (data['TokenSend'] == "USDC" and data['TokenWant'] == "PIKAU"):
-            coindit = PriceCoin.objects.get(addres=23)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "usdc"})
-        elif (data['TokenSend'] == "USDC" and data['TokenWant'] == "Polygon"):
-            coindit = PriceCoin.objects.get(addres=24)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "usdc"})
-        elif (data['TokenSend'] == "USDC" and data['TokenWant'] == "BNB"):
-            coindit = PriceCoin.objects.get(addres=25)
-            data.update({'AmountBack': coindit.ExchangePrice * float(data['Amount'])})
-            data.update({'SelNetwork': "usdc"})
-        else:
+        pair = (data['TokenSend'], data['TokenWant'])
+
+        if pair not in PAIR_DB_IDS:
             return HttpResponse("403 Forbid")
-        data.update({'meta_pay': True})
-        data.update({'payeer_pay': False})
-        data.update({'userIp': ip})
-        data.update({'addres': uuid.uuid4().hex})
-        data.update({'PaymentStat': "pending"})
-        data.update({'SendSystemStat': "WaitingPayment"})
-        data.update({'CompString': uuid.uuid4().hex})
-        data.update({'CancelString': uuid.uuid4().hex})
-        data.update({'date_added_pay': datetime.now(timezone.utc)})
+
+        coindit = PriceCoin.objects.get(addres=PAIR_DB_IDS[pair])
+        data.update({
+            'AmountBack': coindit.ExchangePrice * float(data['Amount']),
+            'SelNetwork': TOKEN_NETWORK_MAP[data['TokenSend']],
+            'meta_pay': True,
+            'payeer_pay': False,
+            'userIp': ip,
+            'addres': uuid.uuid4().hex,
+            'PaymentStat': "pending",
+            'SendSystemStat': "WaitingPayment",
+            'CompString': uuid.uuid4().hex,
+            'CancelString': uuid.uuid4().hex,
+            'date_added_pay': datetime.now(timezone.utc),
+        })
         form = PayReqForm(data)
         if form.is_valid():
             form.save()
