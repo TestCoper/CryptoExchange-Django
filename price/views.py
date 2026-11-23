@@ -1,308 +1,95 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from .models import PriceCoin
 from coinmarketcapapi import CoinMarketCapAPI, CoinMarketCapAPIError
 from datetime import datetime, timezone, timedelta
 
+REFRESH_INTERVAL = timedelta(seconds=70)
 
-reltime = timedelta(seconds=70)
-def Eth(request):
-    coindit = PriceCoin.objects.get(addres=1)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='ETH')
-        pr = r.data['ETH']['quote']['USD']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=1)
-    return JsonResponse({"price": coindit.ExchangePrice})
-    
+# TODO: Move to environment variable — this key is exposed in source control
+CMC_API_KEY = 'f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0'
 
-def Pika(request):
-    coindit = PriceCoin.objects.get(addres=2)
-    return JsonResponse({"price": coindit.ExchangePrice})
-    
+# Maps URL coin name → CoinMarketCap API symbol (None = manually managed price)
+COIN_CMC_SYMBOL = {
+    "ETH": "ETH",
+    "PIKAU": None,
+    "Polygon": "MATIC",
+    "BNB": "BNB",
+    "USDC": "USDC",
+}
 
-def Polygon(request):
-    coindit = PriceCoin.objects.get(addres=3)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='MATIC')
-        pr = r.data['MATIC']['quote']['USD']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=3)
-    return JsonResponse({"price": coindit.ExchangePrice})
-    
+# DB IDs for single-coin USD prices
+SINGLE_COIN_DB_IDS = {
+    "ETH": 1,
+    "PIKAU": 2,
+    "Polygon": 3,
+    "BNB": 4,
+    "USDC": 5,
+}
 
-def Bnb(request):
-    coindit = PriceCoin.objects.get(addres=4)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='BNB')
-        pr = r.data['BNB']['quote']['USD']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=4)
-    return JsonResponse({"price": coindit.ExchangePrice})
-
-def Usdc(request):
-    coindit = PriceCoin.objects.get(addres=5)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='USDC')
-        pr = r.data['USDC']['quote']['USD']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=5)
-    return JsonResponse({"price": coindit.ExchangePrice})
-    
-
-def EthPika(request):
-    coindit = PriceCoin.objects.get(addres=6)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def EthPolygon(request):
-    coindit = PriceCoin.objects.get(addres=7)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='ETH', convert="MATIC")
-        pr = r.data['ETH']['quote']['MATIC']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=7)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def EthBnb(request):
-    coindit = PriceCoin.objects.get(addres=8)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='ETH', convert="BNB")
-        pr = r.data['ETH']['quote']['BNB']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=8)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def EthUsdc(request):
-    coindit = PriceCoin.objects.get(addres=9)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='ETH', convert="USDC")
-        pr = r.data['ETH']['quote']['USDC']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=9)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def PikaEth(request):
-    coindit = PriceCoin.objects.get(addres=10)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def PikaPolygon(request):
-    coindit = PriceCoin.objects.get(addres=11)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def PikaBnb(request):
-    coindit = PriceCoin.objects.get(addres=12)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def PikaUsdc(request):
-    coindit = PriceCoin.objects.get(addres=13)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def PolygonEth(request):
-    coindit = PriceCoin.objects.get(addres=14)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='MATIC', convert="ETH")
-        pr = r.data['MATIC']['quote']['ETH']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=14)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def PolygonPika(request):
-    coindit = PriceCoin.objects.get(addres=15)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def PolygonBnb(request):
-    coindit = PriceCoin.objects.get(addres=16)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='MATIC', convert="BNB")
-        pr = r.data['MATIC']['quote']['BNB']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=16)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def PolygonUsdc(request):
-    coindit = PriceCoin.objects.get(addres=17)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='MATIC', convert="USDC")
-        pr = r.data['MATIC']['quote']['USDC']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=17)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def BnbEth(request):
-    coindit = PriceCoin.objects.get(addres=18)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='BNB', convert="ETH")
-        pr = r.data['BNB']['quote']['ETH']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=18)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def BnbPika(request):
-    coindit = PriceCoin.objects.get(addres=19)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def BnbPolygon(request):
-    coindit = PriceCoin.objects.get(addres=20)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='BNB', convert="MATIC")
-        pr = r.data['BNB']['quote']['MATIC']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=20)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def BnbUsdc(request):
-    coindit = PriceCoin.objects.get(addres=21)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='BNB', convert="USDC")
-        pr = r.data['BNB']['quote']['USDC']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=21)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def UsdcEth(request):
-    coindit = PriceCoin.objects.get(addres=22)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='USDC', convert="ETH")
-        pr = r.data['USDC']['quote']['ETH']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=22)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def UsdcPika(request):
-    coindit = PriceCoin.objects.get(addres=23)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def UsdcPolygon(request):
-    coindit = PriceCoin.objects.get(addres=24)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='USDC', convert="MATIC")
-        pr = r.data['USDC']['quote']['MATIC']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=24)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
-
-def UsdcBnb(request):
-    coindit = PriceCoin.objects.get(addres=25)
-    reqabl = coindit.date_added
-    now = datetime.now(timezone.utc)
-    ekh = now - reqabl
-    if ( ekh > reltime):
-        cmc = CoinMarketCapAPI('f7c056ca-e2ce-4da6-8cc0-955c2e29ddd0')
-        r = cmc.cryptocurrency_quotes_latest(symbol='USDC', convert="BNB")
-        pr = r.data['USDC']['quote']['BNB']['price']
-        coindit.ExchangePrice = pr
-        coindit.date_added = datetime.now(timezone.utc)
-        coindit.save()
-        coindit = PriceCoin.objects.get(addres=25)
-    return JsonResponse({"From": coindit.From, "To": coindit.To, "price": coindit.ExchangePrice})
-    
+# DB IDs for coin-pair exchange rates
+PAIR_DB_IDS = {
+    ("ETH", "PIKAU"): 6,
+    ("ETH", "Polygon"): 7,
+    ("ETH", "BNB"): 8,
+    ("ETH", "USDC"): 9,
+    ("PIKAU", "ETH"): 10,
+    ("PIKAU", "Polygon"): 11,
+    ("PIKAU", "BNB"): 12,
+    ("PIKAU", "USDC"): 13,
+    ("Polygon", "ETH"): 14,
+    ("Polygon", "PIKAU"): 15,
+    ("Polygon", "BNB"): 16,
+    ("Polygon", "USDC"): 17,
+    ("BNB", "ETH"): 18,
+    ("BNB", "PIKAU"): 19,
+    ("BNB", "Polygon"): 20,
+    ("BNB", "USDC"): 21,
+    ("USDC", "ETH"): 22,
+    ("USDC", "PIKAU"): 23,
+    ("USDC", "Polygon"): 24,
+    ("USDC", "BNB"): 25,
+}
 
 
+def _refresh_if_stale(coin, cmc_symbol, convert="USD"):
+    """Refresh price from CoinMarketCap if cached data is older than REFRESH_INTERVAL."""
+    elapsed = datetime.now(timezone.utc) - coin.date_added
+    if elapsed > REFRESH_INTERVAL:
+        cmc = CoinMarketCapAPI(CMC_API_KEY)
+        r = cmc.cryptocurrency_quotes_latest(symbol=cmc_symbol, convert=convert)
+        coin.ExchangePrice = r.data[cmc_symbol]['quote'][convert]['price']
+        coin.date_added = datetime.now(timezone.utc)
+        coin.save()
+        coin.refresh_from_db()
+
+
+def get_single_price(request, coin_name):
+    """Get the USD price of a single cryptocurrency."""
+    if coin_name not in SINGLE_COIN_DB_IDS:
+        raise Http404(f"Unknown coin: {coin_name}")
+
+    coin = PriceCoin.objects.get(addres=SINGLE_COIN_DB_IDS[coin_name])
+    cmc_symbol = COIN_CMC_SYMBOL.get(coin_name)
+
+    if cmc_symbol:
+        _refresh_if_stale(coin, cmc_symbol)
+
+    return JsonResponse({"price": coin.ExchangePrice})
+
+
+def get_pair_price(request, from_coin, to_coin):
+    """Get the exchange rate between two cryptocurrencies."""
+    pair = (from_coin, to_coin)
+    if pair not in PAIR_DB_IDS:
+        raise Http404(f"Unknown pair: {from_coin}/{to_coin}")
+
+    coin = PriceCoin.objects.get(addres=PAIR_DB_IDS[pair])
+    from_symbol = COIN_CMC_SYMBOL.get(from_coin)
+    to_symbol = COIN_CMC_SYMBOL.get(to_coin)
+
+    # Only auto-refresh pairs where both coins have a CMC symbol
+    # (PIKAU pairs are manually managed)
+    if from_symbol and to_symbol:
+        _refresh_if_stale(coin, from_symbol, convert=to_symbol)
+
+    return JsonResponse({"From": coin.From, "To": coin.To, "price": coin.ExchangePrice})
